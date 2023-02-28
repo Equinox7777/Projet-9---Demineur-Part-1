@@ -1,6 +1,3 @@
-// ConsoleApplication1.cpp : Ce fichier contient la fonction 'main'. L'exécution du programme commence et se termine à cet endroit.
-//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -59,10 +56,9 @@ void AfficheMines(char MINES[10][10])
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-void PlaceMines(char MINES[10][10])
+void PlaceMines(char MINES[10][10], int NbMines)
 {
     int Pmines;
-    int NbMines = 10;
     srand(time(NULL));
     for (Pmines = 0; Pmines < NbMines; Pmines++)
     {
@@ -119,7 +115,7 @@ void DecouvrirCase(char MINES[10][10], char JEU[10][10], int i, int j)
     if (MINES[i][j] == 'X')
     {
         AfficheMines(MINES);
-        printf("Apprend à jouer mon reuf\n");
+        printf("\tBOOM! perdu......\n");
         exit(0);
     }
     else if (MINES[i][j] != ' ')
@@ -152,17 +148,20 @@ void PlacerDrapeau(char JEU[10][10], int i, int j) {
 void Choisir(int choix, char MINES[10][10], char JEU[10][10])
 {
     int i, j;
-    printf("\n\nVeuillez entrer la case choisie (numero de ligne [espace] numero de colonne):\t");
-    scanf_s("%d %d", &i, &j);
+    do {
+        printf("Veuillez entrer la case choisie (numero de ligne [espace] numero de colonne) : ");
+        scanf_s("%d %d", &i, &j);
+    } while (i < 1 || i > 10 || j < 1 || j > 10);
+
     printf("Vous avez choisi la case (%d,%d).\ Que voulez-vous faire ?\n", i, j);
     i = i - 1;
     j = j - 1;
-    printf("\t1. Decouvrir une case\n");
-    printf("\t2. Placer un drapeau\n");
     do
     {
-        printf("\t\tVotre choix : ");
-        scanf_s("%d", &choix);
+    printf("\t1. Decouvrir une case\n");
+    printf("\t2. Placer un drapeau\n");
+    printf("\t\tVotre choix : ");
+    scanf_s("%d", &choix);
     } while (choix < 0 || choix>2);
 
     if (choix == 1)
@@ -190,18 +189,26 @@ int EstTermine(char JEU[10][10], char MINES[10][10]) {
         }
     }
     printf("GG mec!");
-    return 1; // Toutes les cases qui ne contiennent pas de mine ont été révélées, la partie est terminée
+    return 1; // Toutes les cases qui ne contiennent pas de mine ont été révélées
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 int main()
 {
+
     int choix{};//choix d'une case
     char JEU[10][10];//grille de jeu
-    char MINES[10][10];//grille avec les mines
+    char MINES[10][10];//grille avec les Mines 
+    int NbMines;//Nombre de Mines
+
+    do {
+        printf("Combien de mines voulez-vous ? (maximum 99)\n");
+        scanf_s("%d", &NbMines);
+    } while (NbMines < 1 || NbMines > 99);
+
     Init(MINES, JEU);
     AfficheJeu(JEU);
-    PlaceMines(MINES);
+    PlaceMines(MINES, NbMines);
     CompteMines(MINES);
     while (!EstTermine(JEU, MINES))
     {
@@ -210,4 +217,3 @@ int main()
 
     return 0;
 }
- 
