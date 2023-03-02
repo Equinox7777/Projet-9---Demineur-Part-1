@@ -112,31 +112,34 @@ void CompteMines(char MINES[10][10])
 ////////////////////////////////////////////////////////////////////////////////
 void DecouvrirCase(char MINES[10][10], char JEU[10][10], int i, int j)
 {
-    if (MINES[i][j] == 'X')
-    {
-        AfficheMines(MINES);
-        printf("\tBOOM! perdu......\n");
-        exit(0);
-    }
-    else if (MINES[i][j] != ' ')
+    if (MINES[i][j] != ' ')
     {
         JEU[i][j] = MINES[i][j];
     }
-    else
+
+    if (MINES[i][j] == '0')
     {
-        JEU[i][j] = ' ';
-        int k, l;
-        for (k = i - 1; k <= i + 1; k++)
+        for (int k = i - 1; k <= i + 1; k++)
         {
-            for (l = j - 1; l <= j + 1; l++)
+            for (int l = j - 1; l <= j + 1; l++)
             {
-                if (k >= 0 && k < 10 && l >= 0 && l < 10 && JEU[k][l] == '-')
+                if (k >= 0 && k < 10 && l >= 0 && l < 10) //est-ce que la case est dans la grille
                 {
-                    DecouvrirCase(MINES, JEU, k, l);
+
+                    if (MINES[k][l] == '0' && JEU[k][l] == '-') //On vérifie que la case contient un zéro
+                    {
+                        JEU[k][l] = '0';
+                        DecouvrirCase(MINES, JEU, k, l);
+                    }
+                    else if (MINES[k][l] != '0' && JEU[k][l] == '-') //On découvre toutes les case non vide autour
+                    {
+                        JEU[k][l] = MINES[k][l];
+                    }
                 }
             }
         }
     }
+
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -148,25 +151,47 @@ void PlacerDrapeau(char JEU[10][10], int i, int j) {
 void Choisir(int choix, char MINES[10][10], char JEU[10][10])
 {
     int i, j;
-    do {
+    do
+    {
+        printf("\n");
         printf("Veuillez entrer la case choisie (numero de ligne [espace] numero de colonne) : ");
-        scanf_s("%d %d", &i, &j);
-    } while (i < 1 || i > 10 || j < 1 || j > 10);
+        while (scanf_s("%d %d", &i, &j) == 0)
+        {
+            printf("Vous devez saisir deux nombres avec un [espace] entre !\n");
+            while (getchar() != '\n')
+                continue;
+        }
+    }
+    while (i < 1 || i > 10 || j < 1 || j > 10);
+
 
     printf("Vous avez choisi la case (%d,%d).\ Que voulez-vous faire ?\n", i, j);
     i = i - 1;
     j = j - 1;
     do
     {
-    printf("\t1. Decouvrir une case\n");
-    printf("\t2. Placer un drapeau\n");
-    printf("\t\tVotre choix : ");
-    scanf_s("%d", &choix);
-    } while (choix < 0 || choix>2);
+        printf("\t1. Decouvrir une case\n");
+        printf("\t2. Placer un drapeau\n");
+        printf("\t\tVotre choix : ");
+        while (scanf_s("%d", &choix) == 0)
+        {
+            printf("\tVous devez saisir 1 ou 2 !\n");
+            while (getchar() != '\n')
+                continue;
+        }
+    } 
+    while (choix < 0 || choix>2);
 
     if (choix == 1)
     {
         DecouvrirCase(MINES, JEU, i, j);
+        if (MINES[i][j] == 'X')
+        {
+            AfficheMines(MINES);
+            printf("\tBOOM! perdu......\n");
+            exit(0);
+        }
+
         AfficheJeu(JEU);
     }
     else if (choix == 2)
@@ -178,18 +203,22 @@ void Choisir(int choix, char MINES[10][10], char JEU[10][10])
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-int EstTermine(char JEU[10][10], char MINES[10][10]) {
-    int i, j;
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 10; j++) {
-            // Vérifie si la case n'a pas été révélée et ne contient pas de mine
-            if (JEU[i][j] == '-' && MINES[i][j] != 'X') {
-                return 0; // La partie n'est pas terminée
+int EstTermine(char JEU[10][10], char MINES[10][10]) 
+{
+    for (int i = 0; i < 10; i++) 
+    {
+        for (int j = 0; j < 10; j++) 
+        {
+            if (JEU[i][j] == '-' && MINES[i][j] != 'X') 
+            {
+                return 0;
             }
         }
     }
+    printf("\n");
     printf("GG mec!");
-    return 1; // Toutes les cases qui ne contiennent pas de mine ont été révélées
+    printf("\n");
+    return 1;
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -201,10 +230,17 @@ int main()
     char MINES[10][10];//grille avec les Mines 
     int NbMines;//Nombre de Mines
 
-    do {
+    do 
+    {
         printf("Combien de mines voulez-vous ? (maximum 99)\n");
-        scanf_s("%d", &NbMines);
-    } while (NbMines < 1 || NbMines > 99);
+        while ( scanf_s("%d", &NbMines) == 0 )
+        {
+            printf("Vous devez saisir un nombre !\n");
+            while (getchar() != '\n')
+                continue;
+        }
+    }
+    while (NbMines < 1 || NbMines > 99);
 
     Init(MINES, JEU);
     AfficheJeu(JEU);
@@ -216,4 +252,4 @@ int main()
     }
 
     return 0;
-}
+ }
