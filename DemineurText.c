@@ -126,12 +126,12 @@ void DecouvrirCase(char MINES[10][10], char JEU[10][10], int i, int j)
                 if (k >= 0 && k < 10 && l >= 0 && l < 10) //est-ce que la case est dans la grille
                 {
 
-                    if (MINES[k][l] == '0' && JEU[k][l] == '-') //On vérifie que la case contient un zéro
+                    if (MINES[k][l] == '0' && JEU[k][l] == '-') //On vÃ©rifie que la case contient un zÃ©ro
                     {
                         JEU[k][l] = '0';
                         DecouvrirCase(MINES, JEU, k, l);
                     }
-                    else if (MINES[k][l] != '0' && JEU[k][l] == '-') //On découvre toutes les case non vide autour
+                    else if (MINES[k][l] != '0' && JEU[k][l] == '-') //On dÃ©couvre toutes les case non vide autour
                     {
                         JEU[k][l] = MINES[k][l];
                     }
@@ -144,7 +144,7 @@ void DecouvrirCase(char MINES[10][10], char JEU[10][10], int i, int j)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 void PlacerDrapeau(char JEU[10][10], int i, int j) {
-    JEU[i][j] = 'F';
+    JEU[i][j] = '@';
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,7 @@ void Choisir(char MINES[10][10], char JEU[10][10])
     while (i < 1 || i > 10 || j < 1 || j > 10);
 
     int choix;
-    printf("Vous avez choisi la case (%d,%d).\ Que voulez-vous faire ?\n", i, j);
+    printf("Vous avez choisi la case (%d,%d). Que voulez-vous faire ?\n", i, j);
     i = i - 1;
     j = j - 1;
     do
